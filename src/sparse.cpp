@@ -13,11 +13,11 @@ int main (int argc, char *argv[])
 
   std::cin >> rowSize >> columnSize;
 
-  SparseMatrix<int>* matrix = new LILMatrix<int>(rowSize, columnSize);
+  LILMatrix<int>* matrix = new LILMatrix<int>(rowSize, columnSize);
 
-  for (int columnIndex = 0; columnIndex < columnSize; columnIndex += 1) 
+  for (int rowIndex = 0; rowIndex < rowSize; rowIndex += 1)
   {
-    for (int rowIndex = 0; rowIndex < rowSize; rowIndex += 1) 
+    for (int columnIndex = 0; columnIndex < columnSize; columnIndex += 1)
     {
       int value = 0;
       std::cin >> value;
@@ -25,8 +25,11 @@ int main (int argc, char *argv[])
     }
   }
 
-  CSRMatrix<int>* crsmatrix = new CSRMatrix<int>(*matrix);
-  std::cout << "nnz: " << crsmatrix->numberNonZero << std::endl;
 
+  CSRMatrix<int>* crsmatrix = new CSRMatrix<int>(*matrix);
+
+  matrix->verbose();
   crsmatrix->verbose();
+
+  crsmatrix->matrix();
 }

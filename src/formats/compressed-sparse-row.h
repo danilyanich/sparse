@@ -20,7 +20,7 @@ public:
 
   ValuesListType elements;
   IndicesListType rowsOffset;
-  IndicesListType columnIndices;
+  IndicesListType indicesInRow;
 
 
   CSRMatrix (SparseMatrix<ValueType>& matrix) :
@@ -32,18 +32,18 @@ public:
     {
       for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1)
       {
-        ValueType& element = matrix.get(indexInRow, indexInColumn);
-        
-        if (element != 0) 
+        const ValueType& element = matrix.get(indexInRow, indexInColumn);
+
+        if (element != 0)
         {
           this->elements.push_back(element);
-          this->columnIndices.push_back(indexInColumn);
+          this->indicesInRow.push_back(indexInRow);
         }
       }
-      
+
       if (this->elements.size() <= matrix.numberNonZero)
       {
-        int offset = this->elements.size();
+        const int offset = this->elements.size();
         this->rowsOffset.push_back(offset);
       }
       else
@@ -55,22 +55,14 @@ public:
 
 
   ValueType& get(int indexInRow, int indexInColumn) {
-    int begin = this->rowsOffset[indexInColumn];
-    int end = this->rowsOffset[indexInColumn + 1];
+    const int begin = this->rowsOffset[indexInColumn];
+    const int end = this->rowsOffset[indexInColumn + 1];
 
-    std::cout << std::endl << std::endl
-      << "indexInRow: " << indexInRow << std::endl
-      << "indexInColumn: " << indexInColumn << std::endl
-      << "begin: " << begin << std::endl
-      << "end: " << end << std::endl;
-
-    for (int index = begin; index <= end; index++)
+    for (int index = begin; index < end; index++)
     {
-      int elementIndexInColumn = this->columnIndices[index];
+      const int elementIndexInRow = this->indicesInRow[index];
 
-      std::cout << "elementIndexInColumn: " << elementIndexInColumn << " | " << index << std::endl;
-      
-      if (elementIndexInColumn == indexInColumn)
+      if (elementIndexInRow == indexInRow)
       {
         return this->elements[index];
       }
@@ -82,28 +74,31 @@ public:
 
   void verbose () {
     std::cout << "AA: ";
-    for (auto& value : this->elements) 
+    for (auto& value : this->elements)
     {
       std::cout << value << ' ';
     }
     std::cout << std::endl;
     std::cout << "AI: ";
-    for (auto& value : this->rowsOffset) 
+    for (auto& value : this->rowsOffset)
     {
       std::cout << value << ' ';
     }
     std::cout << std::endl;
     std::cout << "AJ: ";
-    for (auto& value : this->columnIndices) 
+    for (auto& value : this->indicesInRow)
     {
       std::cout << value << ' ';
     }
     std::cout << std::endl;
-    this->SparseMatrix<ValueType>::verbose();
+
+    const int size = this->elements.size() * sizeof(ValueType) +
+      (this->rowsOffset.size() + this->indicesInRow.size()) * sizeof(int);
+    std::cout << "size: " << size << "kb" << std::endl;
   }
 
 
-  ~CSRMatrix () 
+  ~CSRMatrix ()
   {
   }
 

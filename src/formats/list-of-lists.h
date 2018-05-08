@@ -22,7 +22,7 @@ public:
 
   LILMatrix (int rowSize, int columnSize) :
     SparseMatrix<ValueType>(rowSize, columnSize),
-    rowList(columnSize)
+    rowList(rowSize)
   {
   }
 
@@ -39,13 +39,35 @@ public:
 
   ValueType& get(int indexInRow, int indexInColumn) {
     RowType row = this->rowList[indexInRow];
-    ValueType& found = row[indexInColumn]; 
+    ValueType& found = row[indexInColumn];
 
     return found;
   }
 
+  void verbose()
+  {
+    int size = 0;
 
-  ~LILMatrix () 
+    size += sizeof(RowType) * this->rowList.size();
+    std::cout << "rows:" << std::endl;
+    for (auto& map : this->rowList)
+    {
+
+      size += sizeof(PairType) * map.size();
+
+      std::cout << " - ";
+      for (auto& value : map)
+      {
+        std::cout << "<" << value.first << "," << value.second << "> ";
+      }
+      std::cout << std::endl;
+    }
+
+    std::cout << "size: " << size << "kb" << std::endl;
+  }
+
+
+  ~LILMatrix ()
   {
   }
 

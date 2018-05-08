@@ -4,7 +4,7 @@
 
 
 template <class ValueType>
-class SparseMatrix 
+class SparseMatrix
 {
 
 public:
@@ -14,32 +14,36 @@ public:
   int numberNonZero = 0;
 
 
-  SparseMatrix (int rowSize, int columnSize) 
+  SparseMatrix (int rowSize, int columnSize)
   {
     this->rowSize = rowSize;
     this->columnSize = columnSize;
   }
 
 
-  virtual ValueType& get(int indexInRow, int indexInColumn)
+  virtual ValueType& get (int indexInRow, int indexInColumn)
   {
   }
 
 
-  virtual void set(int indexInRow, int indexInColumn, ValueType value)
+  virtual void set (int indexInRow, int indexInColumn, ValueType value)
   {
   }
 
 
-  void increaseNonZeroNumber() {
+  void increaseNonZeroNumber () {
     this->numberNonZero += 1;
   }
 
 
-  void verbose () {
-    for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1) 
+  virtual void verbose ()
+  {
+  }
+
+  void matrix () {
+    for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1)
     {
-      for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1) 
+      for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1)
       {
         std::cout << this->get(indexInRow, indexInColumn) << ' ';
       }
@@ -48,7 +52,7 @@ public:
   }
 
 
-  virtual ~SparseMatrix () 
+  virtual ~SparseMatrix ()
   {
   }
 
