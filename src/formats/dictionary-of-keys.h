@@ -24,18 +24,18 @@ public:
   }
 
 
-  void set(int rowIndex, int columnIndex, ValueType value)
+  void set(int indexInRow, int indexInColumn, ValueType value)
   {
     if (value == 0) return;
 
     this->increaseNonZeroNumber();
-    PairType key = PairType(rowIndex, columnIndex);
+    PairType key = PairType(indexInRow, indexInColumn);
     this->dictionary[key] = value;
   }
 
 
-  ValueType& get(int rowIndex, int columnIndex) {
-    PairType key = PairType(rowIndex, columnIndex);
+  ValueType& get(int indexInRow, int indexInColumn) {
+    PairType key = PairType(indexInRow, indexInColumn);
     ValueType& found = this->dictionary[key];
 
     return found;

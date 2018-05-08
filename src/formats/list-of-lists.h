@@ -27,19 +27,19 @@ public:
   }
 
 
-  void set(int rowIndex, int columnIndex, ValueType value)
+  void set(int indexInRow, int indexInColumn, ValueType value)
   {
     if (value == 0) return;
 
     this->increaseNonZeroNumber();
-    RowType& row = this->rowList[rowIndex];
-    row[columnIndex] = value;
+    RowType& row = this->rowList[indexInRow];
+    row[indexInColumn] = value;
   }
 
 
-  ValueType& get(int rowIndex, int columnIndex) {
-    RowType row = this->rowList[rowIndex];
-    ValueType& found = row[columnIndex]; 
+  ValueType& get(int indexInRow, int indexInColumn) {
+    RowType row = this->rowList[indexInRow];
+    ValueType& found = row[indexInColumn]; 
 
     return found;
   }

@@ -21,12 +21,12 @@ public:
   }
 
 
-  virtual ValueType& get(int rowIndex, int columnIndex)
+  virtual ValueType& get(int indexInRow, int indexInColumn)
   {
   }
 
 
-  virtual void set(int rowIndex, int columnIndex, ValueType value)
+  virtual void set(int indexInRow, int indexInColumn, ValueType value)
   {
   }
 
@@ -37,11 +37,11 @@ public:
 
 
   void verbose () {
-    for (int columnIndex = 0; columnIndex < this->columnSize; columnIndex += 1) 
+    for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1) 
     {
-      for (int rowIndex = 0; rowIndex < this->rowSize; rowIndex += 1) 
+      for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1) 
       {
-        std::cout << this->get(rowIndex, columnIndex) << ' ';
+        std::cout << this->get(indexInRow, indexInColumn) << ' ';
       }
       std::cout << std::endl;
     }

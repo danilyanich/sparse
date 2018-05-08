@@ -26,34 +26,57 @@ public:
   CSRMatrix (SparseMatrix<ValueType>& matrix) :
     SparseMatrix<ValueType>(matrix)
   {
-    int length = 0;
+    this->rowsOffset.push_back(0);
 
-    for (int columnIndex = 0; columnIndex < this->columnSize; columnIndex += 1)
+    for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1)
     {
-      for (int rowIndex = 0; rowIndex < this->rowSize; rowIndex += 1)
+      for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1)
       {
-        ValueType& element = matrix.get(rowIndex, columnIndex);
+        ValueType& element = matrix.get(indexInRow, indexInColumn);
         
         if (element != 0) 
         {
           this->elements.push_back(element);
-          this->columnIndices.push_back(columnIndex);
+          this->columnIndices.push_back(indexInColumn);
         }
       }
       
-      int offset = this->elements.size();
-      if (offset != length)
+      if (this->elements.size() <= matrix.numberNonZero)
       {
+        int offset = this->elements.size();
         this->rowsOffset.push_back(offset);
       }
-      length = this->elements.size();
+      else
+      {
+        break;
+      }
     }
   }
 
 
-  ValueType& get(int rowIndex, int columnIndex) {
-    // TODO: implement get method
-    return this->elements[0];
+  ValueType& get(int indexInRow, int indexInColumn) {
+    int begin = this->rowsOffset[indexInColumn];
+    int end = this->rowsOffset[indexInColumn + 1];
+
+    std::cout << std::endl << std::endl
+      << "indexInRow: " << indexInRow << std::endl
+      << "indexInColumn: " << indexInColumn << std::endl
+      << "begin: " << begin << std::endl
+      << "end: " << end << std::endl;
+
+    for (int index = begin; index <= end; index++)
+    {
+      int elementIndexInColumn = this->columnIndices[index];
+
+      std::cout << "elementIndexInColumn: " << elementIndexInColumn << " | " << index << std::endl;
+      
+      if (elementIndexInColumn == indexInColumn)
+      {
+        return this->elements[index];
+      }
+    }
+
+    return *(new ValueType());
   }
 
 
