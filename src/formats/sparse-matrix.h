@@ -9,19 +9,19 @@ class SparseMatrix
 
 public:
 
-  int rowSize;
-  int columnSize;
+  int rowsCount;
+  int columnsCount;
   int numberNonZero = 0;
 
 
-  SparseMatrix (int rowSize, int columnSize)
+  SparseMatrix (int rowsCount, int columnCount)
   {
-    this->rowSize = rowSize;
-    this->columnSize = columnSize;
+    this->rowsCount = rowsCount;
+    this->columnsCount = columnCount;
   }
 
 
-  virtual ValueType& get (int indexInRow, int indexInColumn)
+  virtual ValueType get (int indexInRow, int indexInColumn)
   {
   }
 
@@ -41,9 +41,9 @@ public:
   }
 
   void matrix () {
-    for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1)
+    for (int indexInColumn = 0; indexInColumn < this->rowsCount; indexInColumn += 1)
     {
-      for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1)
+      for (int indexInRow = 0; indexInRow < this->columnsCount; indexInRow += 1)
       {
         std::cout << this->get(indexInRow, indexInColumn) << ' ';
       }

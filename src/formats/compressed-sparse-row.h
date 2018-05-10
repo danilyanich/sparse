@@ -19,18 +19,18 @@ public:
 
 
   ValuesListType elements;
-  IndicesListType rowsOffset;
+  IndicesListType offsetsInColumn;
   IndicesListType indicesInRow;
 
 
   CSRMatrix (SparseMatrix<ValueType>& matrix) :
     SparseMatrix<ValueType>(matrix)
   {
-    this->rowsOffset.push_back(0);
+    this->offsetsInColumn.push_back(0);
 
-    for (int indexInColumn = 0; indexInColumn < this->columnSize; indexInColumn += 1)
+    for (int indexInColumn = 0; indexInColumn < this->rowsCount; indexInColumn += 1)
     {
-      for (int indexInRow = 0; indexInRow < this->rowSize; indexInRow += 1)
+      for (int indexInRow = 0; indexInRow < this->columnsCount; indexInRow += 1)
       {
         const ValueType& element = matrix.get(indexInRow, indexInColumn);
 
@@ -41,22 +41,15 @@ public:
         }
       }
 
-      if (this->elements.size() <= matrix.numberNonZero)
-      {
-        const int offset = this->elements.size();
-        this->rowsOffset.push_back(offset);
-      }
-      else
-      {
-        break;
-      }
+      const int offset = this->elements.size();
+      this->offsetsInColumn.push_back(offset);
     }
   }
 
 
-  ValueType& get(int indexInRow, int indexInColumn) {
-    const int begin = this->rowsOffset[indexInColumn];
-    const int end = this->rowsOffset[indexInColumn + 1];
+  ValueType get(int indexInRow, int indexInColumn) {
+    const int begin = this->offsetsInColumn[indexInColumn];
+    const int end = this->offsetsInColumn[indexInColumn + 1];
 
     for (int index = begin; index < end; index++)
     {
@@ -68,7 +61,7 @@ public:
       }
     }
 
-    return *(new ValueType());
+    return 0;
   }
 
 
@@ -80,7 +73,7 @@ public:
     }
     std::cout << std::endl;
     std::cout << "AI: ";
-    for (auto& value : this->rowsOffset)
+    for (auto& value : this->offsetsInColumn)
     {
       std::cout << value << ' ';
     }
@@ -93,8 +86,8 @@ public:
     std::cout << std::endl;
 
     const int size = this->elements.size() * sizeof(ValueType) +
-      (this->rowsOffset.size() + this->indicesInRow.size()) * sizeof(int);
-    std::cout << "size: " << size << "kb" << std::endl;
+      (this->offsetsInColumn.size() + this->indicesInRow.size()) * sizeof(int);
+    std::cout << "size: " << size / 1000 << "kb" << std::endl;
   }
 
 

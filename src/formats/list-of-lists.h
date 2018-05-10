@@ -17,12 +17,12 @@ public:
   typedef std::vector<RowType> RowListType;
 
 
-  RowListType rowList;
+  RowListType rowsList;
 
 
-  LILMatrix (int rowSize, int columnSize) :
-    SparseMatrix<ValueType>(rowSize, columnSize),
-    rowList(rowSize)
+  LILMatrix (int rowsCount, int columnsCount) :
+    SparseMatrix<ValueType>(rowsCount, columnsCount),
+    rowsList(rowsCount)
   {
   }
 
@@ -32,25 +32,30 @@ public:
     if (value == 0) return;
 
     this->increaseNonZeroNumber();
-    RowType& row = this->rowList[indexInRow];
+    RowType& row = this->rowsList[indexInRow];
     row[indexInColumn] = value;
   }
 
 
-  ValueType& get(int indexInRow, int indexInColumn) {
-    RowType row = this->rowList[indexInRow];
-    ValueType& found = row[indexInColumn];
+  ValueType get(int indexInRow, int indexInColumn) {
+    RowType row = this->rowsList[indexInRow];
+    const auto& found = row.find(indexInColumn);
 
-    return found;
+    if (found != row.end())
+    {
+      return found->second;
+    }
+
+    return 0;
   }
 
   void verbose()
   {
     int size = 0;
 
-    size += sizeof(RowType) * this->rowList.size();
+    size += sizeof(RowType) * this->rowsList.size();
     std::cout << "rows:" << std::endl;
-    for (auto& map : this->rowList)
+    for (auto& map : this->rowsList)
     {
 
       size += sizeof(PairType) * map.size();
@@ -63,7 +68,7 @@ public:
       std::cout << std::endl;
     }
 
-    std::cout << "size: " << size << "kb" << std::endl;
+    std::cout << "size: " << size / 1000 << "kb" << std::endl;
   }
 
 

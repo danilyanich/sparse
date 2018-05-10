@@ -8,28 +8,43 @@
 
 int main (int argc, char *argv[])
 {
-  int columnSize = 0;
-  int rowSize = 0;
+  int columnCount = 0;
+  int rowsCount = 0;
+  int numberNonZero = 0;
 
-  std::cin >> rowSize >> columnSize;
+  std::cin >> rowsCount >> columnCount >> numberNonZero;
 
-  LILMatrix<int>* matrix = new LILMatrix<int>(rowSize, columnSize);
+  std::cout
+    << "rows: " << rowsCount << " "
+    << "columns: " << columnCount << " "
+    << "nnz: " << numberNonZero << std::endl;
 
-  for (int rowIndex = 0; rowIndex < rowSize; rowIndex += 1)
+  auto matrix = new LILMatrix<double>(rowsCount, columnCount);
+
+  for (int index = 0; index < numberNonZero; index += 1)
   {
-    for (int columnIndex = 0; columnIndex < columnSize; columnIndex += 1)
-    {
-      int value = 0;
-      std::cin >> value;
-      matrix->set(rowIndex, columnIndex, value);
-    }
+    double real = 0;
+    double imaginary = 0;
+
+    int indexInRow = 0;
+    int indexInColumn = 0;
+
+    std::cin
+      >> indexInRow >> indexInColumn
+      >> real >> imaginary;
+
+    matrix->set(indexInRow - 1, indexInColumn - 1, real);
   }
 
+  std::cout << "Parsing complete. Converting to CSR." << std::endl;
 
-  CSRMatrix<int>* crsmatrix = new CSRMatrix<int>(*matrix);
+  auto crsmatrix = new CSRMatrix<double>(*matrix);
+
+  std::cout << "Conversion complete. Output verbose info:" << std::endl;
 
   matrix->verbose();
   crsmatrix->verbose();
 
-  crsmatrix->matrix();
+  delete matrix;
+  delete crsmatrix;
 }
